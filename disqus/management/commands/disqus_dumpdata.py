@@ -45,6 +45,6 @@ class Command(NoArgsCommand):
                                "'DISQUS_WEBSITE_SHORTNAME' setting.")
 
         posts_paginator = Paginator(client.posts.list, forum='omeletebr', related=['thread'], include=final_filter) # since=last_month
-        posts = list(new_posts)
+        posts = list(posts_paginator)
 
         print json.dumps(posts, indent=indent)
