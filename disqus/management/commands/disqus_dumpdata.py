@@ -3,7 +3,7 @@ from optparse import make_option
 from django.core.management.base import NoArgsCommand, CommandError
 from django.utils import simplejson as json
 
-from disqus.api import DisqusClient
+from disqusapi import DisqusAPI, APIError, Paginator
 
 
 class Command(NoArgsCommand):
@@ -21,37 +21,30 @@ class Command(NoArgsCommand):
     def handle(self, **options):
         from django.conf import settings
 
-        client = DisqusClient()
+        client = DisqusAPI(settings.DISQUS_SECRET_KEY, settings.DISQUS_PUBLIC_KEY)
         indent = options.get('indent')
         filter_ = options.get('filter')
         exclude = options.get('exclude')
 
+        default_filter = ['approved']
+        default_exclude = ['unapproved', 'spam', 'deleted', 'flagged', 'highlighted']
+
+        if exclude:
+            final_filter = set(default_filter + default_exclude).difference(exclude)
+        else:
+            final_filter = filter_ if filter_ else default_filter
+
         # Get a list of all forums for an API key. Each API key can have 
         # multiple forums associated. This application only supports the one 
         # set in the DISQUS_WEBSITE_SHORTNAME variable
-        forum_list = client.get_forum_list(user_api_key=settings.DISQUS_API_KEY)
         try:
-            forum = [f for f in forum_list\
-                     if f['shortname'] == settings.DISQUS_WEBSITE_SHORTNAME][0]
-        except IndexError:
+            threads = client.forums.listThreads(forum=settings.DISQUS_WEBSITE_SHORTNAME)
+        except APIError:
             raise CommandError("Could not find forum. " +
                                "Please check your " +
                                "'DISQUS_WEBSITE_SHORTNAME' setting.")
-        posts = []
-        has_new_posts = True
-        start = 0
-        step = 100
-        while has_new_posts:
-            new_posts = client.get_forum_posts(
-                user_api_key=settings.DISQUS_API_KEY,
-                forum_id=forum['id'],
-                start=start,
-                limit=start+step,
-                filter=filter_,
-                exclude=exclude)
-            if not new_posts:
-                has_new_posts = False
-            else:
-                start += step
-                posts.append(new_posts)
+
+        posts_paginator = Paginator(client.posts.list, forum='omeletebr', related=['thread'], include=final_filter) # since=last_month
+        posts = list(new_posts)
+
         print json.dumps(posts, indent=indent)
