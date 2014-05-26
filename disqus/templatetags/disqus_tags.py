@@ -70,7 +70,7 @@ def disqus_dev(context):
     return ""
 
 @register.simple_tag(takes_context=True)
-def disqus_sso(context):
+def disqus_sso(context, javascript_only=False):
     """
     Return the HTML/js code to enable DISQUS SSO - so logged in users on
     your site can be logged in to disqus seemlessly.
@@ -98,18 +98,23 @@ def disqus_sso(context):
     # generate our hmac signature
     sig = hmac.HMAC(DISQUS_SECRET_KEY, '%s %s' % (message, timestamp), hashlib.sha1).hexdigest()
  
-    # return a script tag to insert the sso message
-    return """<script type="text/javascript">
+    javascript = """
 var disqus_config = function() {
 this.page.remote_auth_s3 = "%(message)s %(sig)s %(timestamp)s";
 this.page.api_key = "%(pub_key)s";
 }
-</script>""" % dict(
+""" % dict(
         message=message,
         timestamp=timestamp,
         sig=sig,
         pub_key=DISQUS_PUBLIC_KEY,
     )
+
+    # return a script tag to insert the sso message
+    if javascript_only:
+        return javascript
+    else:
+        return '<script type="text/javascript">\n%s\n</script>' % javascript
 
 @register.inclusion_tag('disqus/num_replies.html', takes_context=True)
 def disqus_num_replies(context, shortname=''):
