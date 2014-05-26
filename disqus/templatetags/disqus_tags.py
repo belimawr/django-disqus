@@ -142,7 +142,7 @@ def disqus_recent_comments(context, shortname='', num_items=5, excerpt_length=20
     }
 
 @register.inclusion_tag('disqus/show_comments.html', takes_context=True)
-def disqus_show_comments(context, shortname=''):
+def disqus_show_comments(context, shortname='', enable_sso=False):
     """
     Return the HTML code to display DISQUS comments.
     """
@@ -150,4 +150,6 @@ def disqus_show_comments(context, shortname=''):
     return {
         'shortname': shortname,
         'config': get_config(context),
+        'enable_sso': enable_sso,
+        'user': context['user'],
     }

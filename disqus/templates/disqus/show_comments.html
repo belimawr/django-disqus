@@ -1,4 +1,11 @@
+{% load disqus_tags %}
+
 <div id="disqus_thread"></div>
+
+{% if enable_sso %}
+	{% disqus_sso %}
+{% endif %}
+
 <script type="text/javascript">
 /* <![CDATA[ */
 {% block config_variables %}
