@@ -25,12 +25,12 @@
 	<script>
 	/* <![CDATA[ */
 		(function($) {
-			$.getScript({% url 'disqus:ajax_sso' %})
+			$.getScript("{% url 'disqus:ajax_sso' %}")
 				.done(function( script, textStatus ) {
 					{% if debug %}
 						console.log( textStatus );
 					{% endif %}
-					$.getScript({% url 'disqus:ajax_show_comments' %});
+					$.getScript("{% url 'disqus:ajax_show_comments' %}");
 				});
 			// end 1st getScript()
 		})( jQuery );
