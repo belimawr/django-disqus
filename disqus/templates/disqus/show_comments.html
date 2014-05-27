@@ -6,14 +6,24 @@
 {% if enable_sso == 'ajax' %} {# ajax version #}
 
 	<script type="text/javascript">
-	//<![CDATA[
+	/* <![CDATA[ */
+		{#% block config_variables %#}
+			var disqus_shortname = '{{ shortname }}';
+		{{ config|safe}}
+		{#% endblock %#}
+	/* ]]> */
+	</script>
+
+	<script type="text/javascript">
+	/* <![CDATA[ */
 		if (typeof jQuery == 'undefined') {
 			document.write("<script src='//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js'></" + "script>");
 		}
-	//]]>
+	/* ]]> */
 	</script>
 
 	<script>
+	/* <![CDATA[ */
 		(function($) {
 			$.getScript({% url 'disqus:ajax_sso' %})
 				.done(function( script, textStatus ) {
@@ -24,6 +34,7 @@
 				});
 			// end 1st getScript()
 		})( jQuery );
+	/* ]]> */
 	</script>
 
 {% else %} {# synchronous version #}
