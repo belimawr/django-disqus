@@ -56,6 +56,9 @@ Result::
  - ``shortname``: DISQUS website shortname that should be used. The
    ``settings.DISQUS_WEBSITE_SHORTNAME`` setting takes precedence
    over this parameter. Example: ``{% disqus_show_comments "foobar" %}``
+ - ``enable_sso``: Enable SSO integration if set to ``True``.
+   If set to ``'ajax'``, lazily loads the SSO configs and the `embed.js` tag,
+   working around whole-page cache strategies.
 
 .. _disqus_recent_comments:
 

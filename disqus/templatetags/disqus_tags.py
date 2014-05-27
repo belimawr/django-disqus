@@ -150,6 +150,8 @@ def disqus_recent_comments(context, shortname='', num_items=5, excerpt_length=20
 def disqus_show_comments(context, shortname='', enable_sso=False):
     """
     Return the HTML code to display DISQUS comments.
+
+    :param enable_sso: False (default), True, or 'ajax'
     """
     shortname = getattr(settings, 'DISQUS_WEBSITE_SHORTNAME', shortname)
     return {
