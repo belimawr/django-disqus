@@ -28,13 +28,22 @@ on the DISQUS_ website.
 
 Example settings.py::
 
-   INSTALLED_APPS = (
+    INSTALLED_APPS = (
         ...
         'disqus',
     )
 
     DISQUS_API_KEY = 'FOOBARFOOBARFOOBARFOOBARFOOBARF'
-    DISQUS_WEBSITE_SHORTNAME = 'foobar' 
+    DISQUS_WEBSITE_SHORTNAME = 'foobar'
+
+Then add ``disqus`` namespace to your main urls.py::
+
+    from django.conf.urls import patterns, include, url
+
+    urlpatterns = patterns('',
+        ...
+        url(r'^disqus-or-other-path/', include('disqus.urls', namespace='disqus')),
+    )
 
 Finally, you need to change the domain of your Site to the domain you're
 actually going to use for your website. The easiest way to do this is to enable
