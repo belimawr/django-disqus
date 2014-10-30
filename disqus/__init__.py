@@ -21,5 +21,6 @@ def call(method, data, post=False):
         data = ''
     res = json.load(urllib2.urlopen(url, data))
     if not res['succeeded']:
-        raise CommandError("'%s' failed: %s\nData: %s" % (method, res['code'], data))
+        raise CommandError("'%s' failed: %s\nData: %s" % (method, res['code'],
+                                                          data))
     return res['message']
