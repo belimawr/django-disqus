@@ -75,6 +75,9 @@ def disqus_sso(context, javascript_only=False):
     Return the HTML/js code to enable DISQUS SSO - so logged in users on
     your site can be logged in to disqus seemlessly.
     """
+    '''
+    BUG: This does not work on cached websites :/
+    '''
     # we have to make it str rather than unicode or the HMAC blows up
     DISQUS_SECRET_KEY = str(getattr(settings, 'DISQUS_SECRET_KEY', None))
     if DISQUS_SECRET_KEY is None:
